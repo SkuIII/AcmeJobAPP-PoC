@@ -73,11 +73,11 @@ const scraperObject = {
                 await newPage.close();
             });
 
-            for(link in urls){
-                let currentPageData = await pagePromise(urls[link]);
-                scrapedData.push(currentPageData);
-                console.log(currentPageData);
-            }
+            // for(link in urls){
+            //     let currentPageData = await pagePromise(urls[link]);
+            //     scrapedData.push(currentPageData);
+            //     console.log(currentPageData);
+            // }
 
             // When all the data on this page is done, click the next button and start the scraping of the next page
             // You are going to check if this button exist first, so you know if there really is a next page.
