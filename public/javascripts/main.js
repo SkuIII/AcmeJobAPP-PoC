@@ -20,6 +20,6 @@ const load = (res) => {
 
         const li = document.createElement('li');
         li.textContent = element.jobTitle;
-        document.getElementById('content').appendChild(li);
+        document.getElementById('app').appendChild(li);
     });
 }
