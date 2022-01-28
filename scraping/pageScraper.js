@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 // const scraperObject = {
 //     url: 'https://arbetsformedlingen.se/platsbanken/annonser?q=devops&l=2:CifL_Rzy_Mku',
 //     async scraper(browser) {
@@ -74,11 +76,20 @@ const scraperObject = {
                 await newPage.close();
             });
 
-            // for (link in urls) {
-            //     let currentPageData = await pagePromise(urls[link]);
-            //     scrapedData.push(currentPageData);
-            //     console.log(currentPageData);
-            // }
+            for (link in urls) {
+                let currentPageData = await pagePromise(urls[link]);
+                scrapedData.push(currentPageData);
+                console.log(currentPageData);
+            }
+
+            fs.appendFile("data.json", JSON.stringify(scrapedData), (err) => {
+                if (err)
+                    console.log(err);
+                else {
+                    console.log("File written successfully\n");
+                    console.log("The written has the following contents:");
+                }
+            });
 
             // When all the data on this page is done, click the next button and start the scraping of the next page
             // You are going to check if this button exist first, so you know if there really is a next page.
@@ -94,6 +105,8 @@ const scraperObject = {
 
                 await page.waitForSelector('.sc-digi-button-h .digi-button--icon-secondary.sc-digi-button');
                 await page.click('.sc-digi-button-h .digi-button--icon-secondary.sc-digi-button');
+                await page.waitForSelector('.sc-digi-button-h .digi-button--icon-secondary.sc-digi-button');
+                await page.waitForSelector('.result-container');
 
                 console.log('THIS IS AFTER THE CLICK');
 

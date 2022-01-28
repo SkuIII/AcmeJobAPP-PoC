@@ -30,8 +30,10 @@ scrapeAll(browserInstance)
 async function scrapeAll(browserInstance) {
     let browser;
     try {
+        console.log('BEFORE BROWSERINSTANCE');
         browser = await browserInstance;
         await scraperObject.scraper(browser);
+        console.log('AFTER BROWSERINSTANCE');
 
     } catch (err) {
         console.log("Could not resolve the browser instance => ", err);
