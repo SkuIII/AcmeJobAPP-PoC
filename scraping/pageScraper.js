@@ -41,20 +41,21 @@
 
 const scraperObject = {
     url: 'https://arbetsformedlingen.se/platsbanken/annonser?q=devops&l=2:CifL_Rzy_Mku',
-    async scraper(browser){
+    async scraper(browser) {
         let page = await browser.newPage();
         console.log(`Navigating to ${this.url}...`);
         // Navigate to the selected page
         await page.goto(this.url);
         let scrapedData = [];
         // Wait for the required DOM to be rendered
-        async function scrapeCurrentPage(){
+        async function scrapeCurrentPage() {
             await page.waitForSelector('.result-container');
             // Get the link to all the required books
             let urls = await page.$$eval('.header-container > h3 > a', links => {
-                console.log(links.map(link => link.href));
                 return links.map(link => link.href);
             });
+            console.log(urls);
+            console.log('URLSURLSURLSURLSURLSURLSURLSURLSURLSURLSURLSURLS');
             // Loop through each of those links, open a new page instance and get the relevant data from them
             let pagePromise = (link) => new Promise(async(resolve, reject) => {
                 let dataObj = {};
@@ -73,7 +74,7 @@ const scraperObject = {
                 await newPage.close();
             });
 
-            // for(link in urls){
+            // for (link in urls) {
             //     let currentPageData = await pagePromise(urls[link]);
             //     scrapedData.push(currentPageData);
             //     console.log(currentPageData);
@@ -82,17 +83,17 @@ const scraperObject = {
             // When all the data on this page is done, click the next button and start the scraping of the next page
             // You are going to check if this button exist first, so you know if there really is a next page.
             let nextButtonExist = false;
-            try{
+            try {
                 // const nextButtonExist = await page.$eval('.digi-button__text.sc-digi-button.sc-digi-button-s > .sc-digi-navigation-pagination', a => a.textContent === 'Nästa');
                 nextButtonExist = true;
-            }
-            catch(err){
+            } catch (err) {
                 nextButtonExist = false;
             }
-            if(nextButtonExist){
+            if (nextButtonExist) {
                 console.log('THIS IS BEFORE THE CLICK');
 
-                await page.click('.digi-button.digi-button--secondary.digi-button--m.digi-button--icon-secondary.sc-digi-button');
+                await page.waitForSelector('.sc-digi-button-h .digi-button--icon-secondary.sc-digi-button');
+                await page.click('.sc-digi-button-h .digi-button--icon-secondary.sc-digi-button');
 
                 console.log('THIS IS AFTER THE CLICK');
 
