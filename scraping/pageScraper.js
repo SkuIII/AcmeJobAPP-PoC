@@ -1,46 +1,5 @@
 const fs = require('fs');
 
-// const scraperObject = {
-//     url: 'https://arbetsformedlingen.se/platsbanken/annonser?q=devops&l=2:CifL_Rzy_Mku',
-//     async scraper(browser) {
-//         let page = await browser.newPage();
-//         console.log(`Navigating to ${this.url}...`);
-//         // Navigate to the selected page
-//         await page.goto(this.url);
-//         // Wait for the required DOM to be rendered
-//         await page.waitForSelector('.result-container');
-//         // Get the link to all the required books
-//         let urls = await page.$$eval('.header-container > h3 > a', links => {
-//             return links.map(link => link.href);
-//         });
-
-//         // Loop through each of those links, open a new page instance and get the relevant data from them
-//         let pagePromise = (link) => new Promise(async(resolve, reject) => {
-//             let dataObj = {};
-//             let newPage = await browser.newPage();
-//             await newPage.goto(link);
-//             await newPage.waitForSelector('.jobb-container');
-
-//             dataObj['jobTitle'] = await newPage.$eval('h1.spacing.break-title', text => text.textContent);
-//             dataObj['companyName'] = await newPage.$eval('#pb-company-name', text => text.textContent);
-//             dataObj['companyLocation'] = await newPage.$eval('#pb-job-location', text => text.textContent);
-//             dataObj['jobDescription'] = await newPage.$eval('.job-description', text => text.textContent);
-//             dataObj['jobPublished'] = await newPage.$eval('[translate="section-jobb-about.published"]', text => text.textContent);
-
-//             dataObj['jobTerms'] = await newPage.$eval('[translate="section-jobb-main-content.extent"]', text => text.nextElementSibling.textContent);
-
-//             resolve(dataObj);
-
-//             await newPage.close();
-//         });
-
-//         for (link in urls) {
-//             let currentPageData = await pagePromise(urls[link]);
-//             console.log(currentPageData);
-//         }
-//     }
-// }
-
 const scraperObject = {
     url: 'https://arbetsformedlingen.se/platsbanken/annonser?q=devops&l=2:CifL_Rzy_Mku',
     async scraper(browser) {
@@ -57,7 +16,6 @@ const scraperObject = {
                 return links.map(link => link.href);
             });
             console.log(urls);
-            console.log('URLSURLSURLSURLSURLSURLSURLSURLSURLSURLSURLSURLS');
             // Loop through each of those links, open a new page instance and get the relevant data from them
             let pagePromise = (link) => new Promise(async(resolve, reject) => {
                 let dataObj = {};
@@ -82,12 +40,11 @@ const scraperObject = {
                 console.log(currentPageData);
             }
 
-            fs.appendFile("data.json", JSON.stringify(scrapedData), (err) => {
+            fs.writeFile("data.json", JSON.stringify(scrapedData), (err) => {
                 if (err)
                     console.log(err);
                 else {
                     console.log("File written successfully\n");
-                    console.log("The written has the following contents:");
                 }
             });
 
@@ -101,18 +58,16 @@ const scraperObject = {
                 nextButtonExist = false;
             }
             if (nextButtonExist) {
-                console.log('THIS IS BEFORE THE CLICK');
 
                 await page.waitForSelector('.sc-digi-button-h .digi-button--icon-secondary.sc-digi-button');
                 await page.click('.sc-digi-button-h .digi-button--icon-secondary.sc-digi-button');
                 await page.waitForSelector('.sc-digi-button-h .digi-button--icon-secondary.sc-digi-button');
                 await page.waitForSelector('.result-container');
 
-                console.log('THIS IS AFTER THE CLICK');
-
                 return scrapeCurrentPage(); // Call this function recursively
             }
             await page.close();
+            console.log(scrapedData);
             return scrapedData;
         }
         let data = await scrapeCurrentPage();
