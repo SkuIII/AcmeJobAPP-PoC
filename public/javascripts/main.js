@@ -16,10 +16,6 @@ const load = (res) => {
 
     data.forEach((element, counter) => {
 
-        const col = document.createElement('div');
-        col.className = 'col';
-        document.getElementById('row').appendChild(col);
-
         const card = document.createElement('div');
         card.className = 'card m-3';
         row.appendChild(card);
@@ -41,15 +37,13 @@ const load = (res) => {
         const published = document.createElement('h4');
         published.textContent = element.jobPublished;
 
-        const divDropdown = document.createElement('div');
-        divDropdown.className = 'dropdown';
-
-        const divDropdownMenu = document.createElement('div');
-        divDropdownMenu.className = 'dropdown-menu';
-
-        let descriptionSplit = element.jobDescription.split(' ');
+        const divCollapse = document.createElement('div');
+        divCollapse.className = 'collapse';
+        divCollapse.id = 'divCollapse' + counter;
 
         const descriptionShort = document.createElement('h6');
+
+        let descriptionSplit = element.jobDescription.split(' ');
 
         descriptionSplit.forEach((element, counter) => {
             if (counter < 31) {
@@ -62,19 +56,24 @@ const load = (res) => {
 
         const btnDropDown = document.createElement('button');
         btnDropDown.textContent = 'Läs mer';
-        btnDropDown.className = 'btn btn-secondary dropdown-toggle';
+        btnDropDown.className = 'btn btn-primary my-3';
+        btnDropDown.type = 'button';
+        btnDropDown.setAttribute('data-bs-toggle', 'collapse');
+        btnDropDown.setAttribute('data-bs-target', '#divCollapse' + counter);
+        btnDropDown.setAttribute('aria-expanded', 'false');
+        btnDropDown.setAttribute('aria-controls', 'divCollapse' + counter);
 
         const descriptionLong = document.createElement('p');
-        descriptionLong.textContent = 'element.jobDescription';
-        descriptionLong.className = 'dropdown-item';
+        descriptionLong.textContent = element.jobDescription;
+        descriptionLong.className = 'card card-body';
 
         cardBody.appendChild(title);
         cardBody.appendChild(company);
         cardBody.appendChild(location);
         cardBody.appendChild(published);
-        cardBody.appendChild(divDropdown);
-        divDropdown.appendChild(descriptionShort);
-        divDropdown.appendChild(btnDropDown);
-        divDropdown.appendChild(descriptionLong);
+        cardBody.appendChild(descriptionShort);
+        cardBody.appendChild(btnDropDown);
+        cardBody.appendChild(divCollapse);
+        divCollapse.appendChild(descriptionLong);
     });
 }
