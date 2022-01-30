@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const scraperObject = {
-    url: 'https://arbetsformedlingen.se/platsbanken/annonser?q=devops&l=2:CifL_Rzy_Mku',
+    url: 'https://arbetsformedlingen.se/platsbanken/annonser?ot=6YE1_gAC_R2G&q=devops&l=2:CifL_Rzy_Mku',
     async scraper(browser) {
         let page = await browser.newPage();
         console.log(`Navigating to ${this.url}...`);
@@ -46,6 +46,8 @@ const scraperObject = {
                 const publishedDate = `${publishedDateSplit[1]} ${publishedDateSplit[2]} ${publishedYearSplit[0]} ${publishedTimeSplit[0]}:${publishedTimeSplit[1]}`;
 
                 dataObj['jobPublishedDate'] = Date.parse(publishedDate);
+
+                dataObj['jobLink'] = link;
 
                 resolve(dataObj);
                 await newPage.close();
