@@ -27,8 +27,25 @@ const scraperObject = {
                 dataObj['companyName'] = await newPage.$eval('#pb-company-name', text => text.textContent);
                 dataObj['companyLocation'] = await newPage.$eval('#pb-job-location', text => text.textContent);
                 dataObj['jobDescription'] = await newPage.$eval('.job-description', text => text.textContent);
-                dataObj['jobPublished'] = await newPage.$eval('[translate="section-jobb-about.published"]', text => text.textContent);
                 dataObj['jobTerms'] = await newPage.$eval('[translate="section-jobb-main-content.extent"]', text => text.nextElementSibling.textContent);
+                dataObj['jobPublished'] = await newPage.$eval('[translate="section-jobb-about.published"]', text => text.textContent);
+
+                const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                const monthsSwedish = ['januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december'];
+
+                const publishedDateSplit = dataObj['jobPublished'].split(' ');
+                const publishedYearSplit = publishedDateSplit[3].split(',');
+                const publishedTimeSplit = publishedDateSplit[5].split('.');
+
+                monthsSwedish.forEach((element, counter) => {
+                    if (publishedDateSplit[2] == element) {
+                        publishedDateSplit[2] = months[counter];
+                    }
+                });
+
+                const publishedDate = `${publishedDateSplit[1]} ${publishedDateSplit[2]} ${publishedYearSplit[0]} ${publishedTimeSplit[0]}:${publishedTimeSplit[1]}`;
+
+                dataObj['jobPublishedDate'] = Date.parse(publishedDate);
 
                 resolve(dataObj);
                 await newPage.close();
@@ -37,8 +54,10 @@ const scraperObject = {
             for (link in urls) {
                 let currentPageData = await pagePromise(urls[link]);
                 scrapedData.push(currentPageData);
-                console.log(currentPageData);
+                // console.log(currentPageData);
             }
+
+            scrapedData.sort((element1, element2) => element2.jobPublishedDate - element1.jobPublishedDate)
 
             fs.writeFile("data.json", JSON.stringify(scrapedData), (err) => {
                 if (err)
@@ -60,7 +79,9 @@ const scraperObject = {
             if (nextButtonExist) {
 
                 await page.waitForSelector('.sc-digi-button-h .digi-button--icon-secondary.sc-digi-button');
+
                 await page.click('.sc-digi-button-h .digi-button--icon-secondary.sc-digi-button');
+
                 await page.waitForSelector('.sc-digi-button-h .digi-button--icon-secondary.sc-digi-button');
                 await page.waitForSelector('.result-container');
 
