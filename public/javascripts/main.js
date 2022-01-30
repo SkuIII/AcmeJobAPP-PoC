@@ -65,7 +65,7 @@ const load = (res) => {
         btnDropDown.className = 'btn btn-secondary dropdown-toggle';
 
         const descriptionLong = document.createElement('p');
-        descriptionLong.textContent = element.jobDescription;
+        descriptionLong.textContent = 'element.jobDescription';
         descriptionLong.className = 'dropdown-item';
 
         cardBody.appendChild(title);
