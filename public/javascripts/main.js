@@ -91,14 +91,22 @@ const load = (res) => {
 }
 
 const clickStar = (event) => {
-    console.log(event.target.id);
+    event.target.classList.replace('bi-star', 'bi-star-fill');
     const index = event.target.id.split(' ')[1];
-    console.log(index);
 
-    document.getElementById('colAds').classList.remove('col-12')
+    const colAds = document.getElementById('colAds');
+    colAds.classList.replace('col-12', 'col-6');
+
+    if (document.querySelector('#colStar') == null) {
+        const colStar = document.createElement('div');
+        colStar.className = 'col col-6';
+        colStar.id = 'colStar';
+        document.getElementById('row').appendChild(colStar);
+    }
 
     const card = document.createElement('div');
-    card.className = 'card m-3';
+    card.className = 'card m-3 cardStar';
+    card.id = 'cardStar ' + index;
 
     const cardBody = document.createElement('div');
     cardBody.className = 'card-body';
@@ -108,7 +116,7 @@ const clickStar = (event) => {
 
     const star = document.createElement('i');
     star.className = 'bi bi-star-fill float-end btn btn-outline-secondary';
-    star.id = 'star ' + index;
+    star.id = 'unStar ' + index;
     star.addEventListener('click', unClickStar)
 
     const company = document.createElement('h3');
@@ -168,6 +176,14 @@ const clickStar = (event) => {
     divCollapse.appendChild(descriptionLong);
 }
 
-const unClickStar = () => {
-    console.log('unclicked');
+const unClickStar = (event) => {
+
+    document.getElementById('cardStar ' + event.target.id.split(' ')[1]).remove();
+
+    document.getElementById('star ' + event.target.id.split(' ')[1]).classList.replace('bi-star-fill', 'bi-star');
+
+    if (document.querySelector('.cardStar') == null) {
+        document.getElementById('colStar').remove();
+        document.getElementById('colAds').className = 'col-12';
+    }
 }
