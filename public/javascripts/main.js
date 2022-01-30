@@ -18,11 +18,9 @@ const load = (res) => {
 
         const card = document.createElement('div');
         card.className = 'card m-3';
-        row.appendChild(card);
 
         const cardBody = document.createElement('div');
         cardBody.className = 'card-body';
-        card.appendChild(cardBody);
 
         const title = document.createElement('h2');
         title.textContent = element.jobTitle;
@@ -36,6 +34,10 @@ const load = (res) => {
 
         const published = document.createElement('h4');
         published.textContent = element.jobPublished;
+
+        const link = document.createElement('a');
+        link.className = 'bi bi-link-45deg float-end display-6';
+        link.href = element.jobLink;
 
         const divCollapse = document.createElement('div');
         divCollapse.className = 'collapse';
@@ -67,12 +69,15 @@ const load = (res) => {
         descriptionLong.textContent = element.jobDescription;
         descriptionLong.className = 'card card-body';
 
+        document.getElementById('container').appendChild(card);
+        card.appendChild(cardBody);
         cardBody.appendChild(title);
         cardBody.appendChild(company);
         cardBody.appendChild(location);
         cardBody.appendChild(published);
         cardBody.appendChild(descriptionShort);
         cardBody.appendChild(btnDropDown);
+        cardBody.appendChild(link);
         cardBody.appendChild(divCollapse);
         divCollapse.appendChild(descriptionLong);
     });
