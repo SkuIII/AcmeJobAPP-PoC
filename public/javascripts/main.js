@@ -44,6 +44,7 @@ const load = (res) => {
         const link = document.createElement('a');
         link.className = 'bi bi-link-45deg float-end display-6';
         link.href = element.jobLink;
+        link.target = 'blank';
 
         const divCollapse = document.createElement('div');
         divCollapse.className = 'collapse';
@@ -139,6 +140,7 @@ const clickStar = (event) => {
     const link = document.createElement('a');
     link.className = 'bi bi-link-45deg float-end display-6';
     link.href = data[index].jobLink;
+    link.target = 'blank';
 
     const divCollapse = document.createElement('div');
     divCollapse.className = 'collapse';
@@ -229,6 +231,8 @@ const hideShortDescStar = (event) => {
 
 const updateAds = () => {
     document.getElementById('updateAds').textContent = 'Detta kommer ta en stund';
+
+    document.getElementById('spinner').classList.remove('d-none');
 
     fetch('/data/updateData')
         .then(response => location.reload())
