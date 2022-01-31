@@ -8,11 +8,12 @@ fetch('/data')
 
 let arrAllAds = [];
 
-const load = (res) => {
-    arrAllAds = res;
+const load = (data) => {
+    arrAllAds = data;
     console.log(arrAllAds);
 
     arrAllAds.forEach((element, counter) => {
+        // Counter is used to create a unique id for any element that needs it
 
         const card = document.createElement('div');
         card.className = 'card m-3';
