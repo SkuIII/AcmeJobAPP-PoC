@@ -4,6 +4,8 @@ Detta är en snabb PoC lösning på en webbapplikation som visar upp alla tillg�
 
 Applikationen fungerar på så sätt att vi webscrapar all nödvändig information från Arbetsförmedlingens hemsida. Sedan tar vi emot datan och skickar den till klienten med hjälp av en json fil. Datan vi får från json filen använder vi sedan för att automatgenerera bootstrap boxar med hjälp av javascript så att vi kan visa upp de tillgängliga jobben i Stockholm med titlen "DevOps".
 
+Att ge arbetsplatser med postkoder som börjar på "111" en utmärkelse till exempel en annan färg på bakgrunden kunde inte uppfyllas i denna PoC. Det beror på sättet Arbetsförmedlingen har lagt upp sin sida, det är definitvt ett problem som är möjligt att lösa men det kommer ta mer tid än förväntat.
+
 OBS! När man uppdaterar annonserna med hjälp av "Uppdatera Annonser" knappen så tar det cirka 1-2 min.
 
 ### Moduler/Paket
