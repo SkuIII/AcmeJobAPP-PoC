@@ -66,7 +66,7 @@ router.get('/updateData', function(req, res, next) {
                         return links.map(link => link.href);
                     });
 
-                    // console.log(urls);
+                    console.log(urls);
 
                     // Loop through each of those links, open a new page instance and get the relevant data from them
                     let pagePromise = (link) => new Promise(async(resolve, reject) => {
@@ -78,7 +78,7 @@ router.get('/updateData', function(req, res, next) {
                         dataObj['jobTitle'] = await newPage.$eval('h1.spacing.break-title', text => text.textContent);
                         dataObj['companyName'] = await newPage.$eval('#pb-company-name', text => text.textContent);
                         dataObj['companyLocation'] = await newPage.$eval('#pb-job-location', text => text.textContent);
-                        dataObj['jobDescription'] = await newPage.$eval('.job-description', text => text.textContent);
+                        dataObj['jobDescription'] = await newPage.$eval('.job-description', text => text.innerHTML);
                         dataObj['jobTerms'] = await newPage.$eval('[translate="section-jobb-main-content.extent"]', text => text.nextElementSibling.textContent);
                         dataObj['jobPublished'] = await newPage.$eval('[translate="section-jobb-about.published"]', text => text.textContent);
 
@@ -152,7 +152,7 @@ router.get('/updateData', function(req, res, next) {
                     }
                 });
 
-                // console.log(data);
+                console.log(data);
                 res.send(data);
                 return data;
             }

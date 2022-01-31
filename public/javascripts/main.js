@@ -49,7 +49,7 @@ const load = (res) => {
         divCollapse.className = 'collapse';
         divCollapse.id = 'divCollapse' + counter;
 
-        const descriptionShort = document.createElement('h6');
+        const descriptionShort = document.createElement('p');
         descriptionShort.id = 'descShort ' + counter;
         descriptionShort.style.display = 'block';
 
@@ -57,15 +57,15 @@ const load = (res) => {
 
         descriptionSplit.forEach((element, counter) => {
             if (counter < 31) {
-                descriptionShort.textContent += `${element} `;
+                descriptionShort.innerHTML += `${element} `;
             }
             if (counter == 31) {
-                descriptionShort.textContent += '...';
+                descriptionShort.innerHTML += '...';
             }
         });
 
         const btnCollapse = document.createElement('button');
-        btnCollapse.textContent = 'Läs mer';
+        btnCollapse.textContent = 'Visa mer';
         btnCollapse.className = 'btn btn-primary my-3';
         btnCollapse.type = 'button';
         btnCollapse.id = 'btnCollapse ' + counter;
@@ -76,7 +76,7 @@ const load = (res) => {
         btnCollapse.addEventListener('click', hideShortDesc)
 
         const descriptionLong = document.createElement('p');
-        descriptionLong.textContent = element.jobDescription;
+        descriptionLong.innerHTML = element.jobDescription;
         descriptionLong.className = 'card card-body';
 
         document.getElementById('colAds').appendChild(card);
@@ -86,10 +86,10 @@ const load = (res) => {
         cardBody.appendChild(company);
         cardBody.appendChild(location);
         cardBody.appendChild(published);
-        cardBody.appendChild(descriptionShort);
         cardBody.appendChild(btnCollapse);
         cardBody.appendChild(link);
         cardBody.appendChild(divCollapse);
+        cardBody.appendChild(descriptionShort);
         divCollapse.appendChild(descriptionLong);
     });
 }
@@ -144,22 +144,22 @@ const clickStar = (event) => {
     divCollapse.className = 'collapse';
     divCollapse.id = 'divCollapseStar' + index;
 
-    const descriptionShort = document.createElement('h6');
+    const descriptionShort = document.createElement('p');
     descriptionShort.id = 'descShortStar ' + index;
 
     let descriptionSplit = data[index].jobDescription.split(' ');
 
     descriptionSplit.forEach((element, counter) => {
         if (counter < 31) {
-            descriptionShort.textContent += `${element} `;
+            descriptionShort.innerHTML += `${element} `;
         }
         if (counter == 31) {
-            descriptionShort.textContent += '...';
+            descriptionShort.innerHTML += '...';
         }
     });
 
     const btnCollapse = document.createElement('button');
-    btnCollapse.textContent = 'Läs mer';
+    btnCollapse.textContent = 'Visa mer';
     btnCollapse.className = 'btn btn-primary my-3';
     btnCollapse.type = 'button';
     btnCollapse.id = 'btnCollapseStar ' + index;
@@ -170,7 +170,7 @@ const clickStar = (event) => {
     btnCollapse.addEventListener('click', hideShortDescStar)
 
     const descriptionLong = document.createElement('p');
-    descriptionLong.textContent = data[index].jobDescription;
+    descriptionLong.innerHTML = data[index].jobDescription;
     descriptionLong.className = 'card card-body';
 
     document.getElementById('colStar').appendChild(card);
@@ -180,10 +180,10 @@ const clickStar = (event) => {
     cardBody.appendChild(company);
     cardBody.appendChild(location);
     cardBody.appendChild(published);
-    cardBody.appendChild(descriptionShort);
     cardBody.appendChild(btnCollapse);
     cardBody.appendChild(link);
     cardBody.appendChild(divCollapse);
+    cardBody.appendChild(descriptionShort);
     divCollapse.appendChild(descriptionLong);
 }
 
@@ -200,28 +200,36 @@ const unClickStar = (event) => {
 }
 
 const hideShortDesc = (event) => {
-    const descShortHide = document.getElementById('descShort ' + event.target.id.split(' ')[1])
+    const index = event.target.id.split(' ')[1];
+    const descShortHide = document.getElementById('descShort ' + index);
 
     if (descShortHide.style.display !== 'none') {
         descShortHide.style.display = 'none';
+        document.getElementById('btnCollapse ' + index).textContent = 'Visa Mindre';
+
     } else {
         descShortHide.style.display = 'block';
+        document.getElementById('btnCollapse ' + index).textContent = 'Visa Mer';
     }
 };
 
 const hideShortDescStar = (event) => {
-    const descShortHide = document.getElementById('descShortStar ' + event.target.id.split(' ')[1])
+    const index = event.target.id.split(' ')[1];
+    const descShortHide = document.getElementById('descShortStar ' + index);
 
     if (descShortHide.style.display !== 'none') {
         descShortHide.style.display = 'none';
+        document.getElementById('btnCollapseStar ' + index).textContent = 'Visa Mindre';
+
     } else {
         descShortHide.style.display = 'block';
+        document.getElementById('btnCollapseStar ' + index).textContent = 'Visa Mer';
     }
 };
 
 const updateAds = () => {
-    document.getElementById('updateAds').textContent = 'This will take a while';
-    document.getElementById('spinner').style.display = 'flex';
+    document.getElementById('updateAds').textContent = 'Detta kommer ta en stund';
+
     fetch('/data/updateData')
         .then(response => location.reload())
 };
