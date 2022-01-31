@@ -98,6 +98,10 @@ const clickStar = (event) => {
     event.target.classList.replace('bi-star', 'bi-star-fill');
     const index = event.target.id.split(' ')[1];
 
+    if (document.getElementById('cardStar ' + index) != null) {
+        return;
+    }
+
     const colAds = document.getElementById('colAds');
     colAds.classList.replace('col-12', 'col-6');
 
@@ -196,22 +200,28 @@ const unClickStar = (event) => {
 }
 
 const hideShortDesc = (event) => {
-  const descShortHide = document.getElementById('descShort ' + event.target.id.split(' ')[1])
+    const descShortHide = document.getElementById('descShort ' + event.target.id.split(' ')[1])
 
-  if (descShortHide.style.display !== 'none') {
-    descShortHide.style.display = 'none';
-  } else {
-    descShortHide.style.display = 'block';
-  }
+    if (descShortHide.style.display !== 'none') {
+        descShortHide.style.display = 'none';
+    } else {
+        descShortHide.style.display = 'block';
+    }
 };
 
 const hideShortDescStar = (event) => {
     const descShortHide = document.getElementById('descShortStar ' + event.target.id.split(' ')[1])
-  
-    if (descShortHide.style.display !== 'none') {
-      descShortHide.style.display = 'none';
-    } else {
-      descShortHide.style.display = 'block';
-    }
-  };
 
+    if (descShortHide.style.display !== 'none') {
+        descShortHide.style.display = 'none';
+    } else {
+        descShortHide.style.display = 'block';
+    }
+};
+
+const updateAds = () => {
+    document.getElementById('updateAds').textContent = 'This will take a while';
+    document.getElementById('spinner').style.display = 'flex';
+    fetch('/data/updateData')
+        .then(response => location.reload())
+};

@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
     }
 });
 
-router.get('/data', function(req, res, next) {
+router.get('/updateData', function(req, res, next) {
 
     if (typeof req.headers.referer != 'undefined') {
 
