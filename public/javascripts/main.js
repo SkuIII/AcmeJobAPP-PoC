@@ -2,21 +2,17 @@
 
 console.log('main.js is alive');
 
-const fetchData = fetch(
-    '/data'
-).then((res) => res.json());
+fetch('/data')
+    .then(response => response.json())
+    .then(data => load(data));
 
-const allData = Promise.all([fetchData]);
-
-allData.then((res) => load(res));
-
-let data = [];
+let arrAllAds = [];
 
 const load = (res) => {
-    data = res[0];
-    console.log(data);
+    arrAllAds = res;
+    console.log(arrAllAds);
 
-    data.forEach((element, counter) => {
+    arrAllAds.forEach((element, counter) => {
 
         const card = document.createElement('div');
         card.className = 'card m-3';
@@ -50,18 +46,18 @@ const load = (res) => {
         divCollapse.className = 'collapse';
         divCollapse.id = 'divCollapse' + counter;
 
-        const descriptionShort = document.createElement('p');
-        descriptionShort.id = 'descShort ' + counter;
-        descriptionShort.style.display = 'block';
+        const descShort = document.createElement('p');
+        descShort.id = 'descShort ' + counter;
+        descShort.style.display = 'block';
 
-        let descriptionSplit = element.jobDescription.split(' ');
+        let descSplit = element.jobDescription.split(' ');
 
-        descriptionSplit.forEach((element, counter) => {
+        descSplit.forEach((element, counter) => {
             if (counter < 31) {
-                descriptionShort.innerHTML += `${element} `;
+                descShort.innerHTML += `${element} `;
             }
             if (counter == 31) {
-                descriptionShort.innerHTML += '...';
+                descShort.innerHTML += '...';
             }
         });
 
@@ -74,11 +70,11 @@ const load = (res) => {
         btnCollapse.setAttribute('data-bs-target', '#divCollapse' + counter);
         btnCollapse.setAttribute('aria-expanded', 'false');
         btnCollapse.setAttribute('aria-controls', 'divCollapse' + counter);
-        btnCollapse.addEventListener('click', hideShortDesc)
+        btnCollapse.addEventListener('click', hideShortDesc);
 
-        const descriptionLong = document.createElement('p');
-        descriptionLong.innerHTML = element.jobDescription;
-        descriptionLong.className = 'card card-body';
+        const descLong = document.createElement('p');
+        descLong.innerHTML = element.jobDescription;
+        descLong.className = 'card card-body';
 
         document.getElementById('colAds').appendChild(card);
         card.appendChild(cardBody);
@@ -90,8 +86,8 @@ const load = (res) => {
         cardBody.appendChild(btnCollapse);
         cardBody.appendChild(link);
         cardBody.appendChild(divCollapse);
-        cardBody.appendChild(descriptionShort);
-        divCollapse.appendChild(descriptionLong);
+        cardBody.appendChild(descShort);
+        divCollapse.appendChild(descLong);
     });
 }
 
@@ -99,6 +95,7 @@ const clickStar = (event) => {
     event.target.classList.replace('bi-star', 'bi-star-fill');
     const index = event.target.id.split(' ')[1];
 
+    // Can star an ad only once
     if (document.getElementById('cardStar ' + index) != null) {
         return;
     }
@@ -106,11 +103,11 @@ const clickStar = (event) => {
     const colAds = document.getElementById('colAds');
     colAds.classList.replace('col-12', 'col-6');
 
-    if (document.querySelector('#colStar') == null) {
-        const colStar = document.createElement('div');
-        colStar.className = 'col col-6';
-        colStar.id = 'colStar';
-        document.getElementById('row').appendChild(colStar);
+    if (document.querySelector('#colAdsStar') == null) {
+        const colAdsStar = document.createElement('div');
+        colAdsStar.className = 'col col-6';
+        colAdsStar.id = 'colAdsStar';
+        document.getElementById('row').appendChild(colAdsStar);
     }
 
     const card = document.createElement('div');
@@ -121,42 +118,42 @@ const clickStar = (event) => {
     cardBody.className = 'card-body';
 
     const title = document.createElement('h2');
-    title.textContent = data[index].jobTitle;
+    title.textContent = arrAllAds[index].jobTitle;
 
     const star = document.createElement('i');
     star.className = 'bi bi-star-fill float-end btn btn-outline-secondary';
     star.id = 'unStar ' + index;
-    star.addEventListener('click', unClickStar)
+    star.addEventListener('click', unClickStar);
 
     const company = document.createElement('h3');
-    company.textContent = data[index].companyName;
+    company.textContent = arrAllAds[index].companyName;
 
     const location = document.createElement('h3');
-    location.textContent = data[index].companyLocation;
+    location.textContent = arrAllAds[index].companyLocation;
 
     const published = document.createElement('h4');
-    published.textContent = data[index].jobPublished;
+    published.textContent = arrAllAds[index].jobPublished;
 
     const link = document.createElement('a');
     link.className = 'bi bi-link-45deg float-end display-6';
-    link.href = data[index].jobLink;
+    link.href = arrAllAds[index].jobLink;
     link.target = 'blank';
 
     const divCollapse = document.createElement('div');
     divCollapse.className = 'collapse';
     divCollapse.id = 'divCollapseStar' + index;
 
-    const descriptionShort = document.createElement('p');
-    descriptionShort.id = 'descShortStar ' + index;
+    const descShort = document.createElement('p');
+    descShort.id = 'descShortStar ' + index;
 
-    let descriptionSplit = data[index].jobDescription.split(' ');
+    let descSplit = arrAllAds[index].jobDescription.split(' ');
 
-    descriptionSplit.forEach((element, counter) => {
+    descSplit.forEach((element, counter) => {
         if (counter < 31) {
-            descriptionShort.innerHTML += `${element} `;
+            descShort.innerHTML += `${element} `;
         }
         if (counter == 31) {
-            descriptionShort.innerHTML += '...';
+            descShort.innerHTML += '...';
         }
     });
 
@@ -169,13 +166,13 @@ const clickStar = (event) => {
     btnCollapse.setAttribute('data-bs-target', '#divCollapseStar' + index);
     btnCollapse.setAttribute('aria-expanded', 'false');
     btnCollapse.setAttribute('aria-controls', 'divCollapseStar' + index);
-    btnCollapse.addEventListener('click', hideShortDescStar)
+    btnCollapse.addEventListener('click', hideShortDescStar);
 
-    const descriptionLong = document.createElement('p');
-    descriptionLong.innerHTML = data[index].jobDescription;
-    descriptionLong.className = 'card card-body';
+    const descLong = document.createElement('p');
+    descLong.innerHTML = arrAllAds[index].jobDescription;
+    descLong.className = 'card card-body';
 
-    document.getElementById('colStar').appendChild(card);
+    document.getElementById('colAdsStar').appendChild(card);
     card.appendChild(cardBody);
     cardBody.appendChild(title);
     cardBody.appendChild(star);
@@ -185,24 +182,24 @@ const clickStar = (event) => {
     cardBody.appendChild(btnCollapse);
     cardBody.appendChild(link);
     cardBody.appendChild(divCollapse);
-    cardBody.appendChild(descriptionShort);
-    divCollapse.appendChild(descriptionLong);
+    cardBody.appendChild(descShort);
+    divCollapse.appendChild(descLong);
 }
 
 const unClickStar = (event) => {
-
     document.getElementById('cardStar ' + event.target.id.split(' ')[1]).remove();
 
     document.getElementById('star ' + event.target.id.split(' ')[1]).classList.replace('bi-star-fill', 'bi-star');
 
     if (document.querySelector('.cardStar') == null) {
-        document.getElementById('colStar').remove();
+        document.getElementById('colAdsStar').remove();
         document.getElementById('colAds').className = 'col-12';
     }
 }
 
 const hideShortDesc = (event) => {
     const index = event.target.id.split(' ')[1];
+
     const descShortHide = document.getElementById('descShort ' + index);
 
     if (descShortHide.style.display !== 'none') {
@@ -234,6 +231,5 @@ const updateAds = () => {
 
     document.getElementById('spinner').classList.remove('d-none');
 
-    fetch('/data/updateData')
-        .then(response => location.reload())
+    fetch('/data/updateData').then(response => location.reload());
 };

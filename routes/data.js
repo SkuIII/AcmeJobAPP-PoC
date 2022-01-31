@@ -54,14 +54,20 @@ router.get('/updateData', function(req, res, next) {
             url: 'https://arbetsformedlingen.se/platsbanken/annonser?ot=6YE1_gAC_R2G&q=devops&l=2:CifL_Rzy_Mku',
             async scraper(browser) {
                 let page = await browser.newPage();
+
                 console.log(`Navigating to ${this.url}...`);
+
                 // Navigate to the selected page
                 await page.goto(this.url);
+
                 let scrapedData = [];
-                // Wait for the required DOM to be rendered
+
                 async function scrapeCurrentPage() {
+
+                    // Wait for the required DOM to be rendered
                     await page.waitForSelector('.result-container');
-                    // Get the link to all the required books
+
+                    // Get the link to all the required ads
                     let urls = await page.$$eval('.header-container > h3 > a', links => {
                         return links.map(link => link.href);
                     });
@@ -71,6 +77,7 @@ router.get('/updateData', function(req, res, next) {
                     // Loop through each of those links, open a new page instance and get the relevant data from them
                     let pagePromise = (link) => new Promise(async(resolve, reject) => {
                         let dataObj = {};
+
                         let newPage = await browser.newPage();
                         await newPage.goto(link);
                         await newPage.waitForSelector('.jobb-container');
@@ -80,15 +87,18 @@ router.get('/updateData', function(req, res, next) {
                         dataObj['companyLocation'] = await newPage.$eval('#pb-job-location', text => text.textContent);
                         dataObj['jobDescription'] = await newPage.$eval('.job-description', text => text.innerHTML);
                         dataObj['jobTerms'] = await newPage.$eval('[translate="section-jobb-main-content.extent"]', text => text.nextElementSibling.textContent);
+
                         dataObj['jobPublished'] = await newPage.$eval('[translate="section-jobb-about.published"]', text => text.textContent);
 
                         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
                         const monthsSwedish = ['januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december'];
 
+                        // Getting relevant paramaters to sort ads by date
                         const publishedDateSplit = dataObj['jobPublished'].split(' ');
                         const publishedYearSplit = publishedDateSplit[3].split(',');
                         const publishedTimeSplit = publishedDateSplit[5].split('.');
 
+                        // Converting from months in swedish to english
                         monthsSwedish.forEach((element, counter) => {
                             if (publishedDateSplit[2] == element) {
                                 publishedDateSplit[2] = months[counter];
@@ -105,18 +115,20 @@ router.get('/updateData', function(req, res, next) {
                         await newPage.close();
                     });
 
+                    // Not using foreach because of await
                     for (let link = 0; link < urls.length; link++) {
                         let currentPageData = await pagePromise(urls[link]);
                         scrapedData.push(currentPageData);
                         // console.log(currentPageData);
                     }
 
-                    // When all the data on this page is done, click the next button and start the scraping of the next page
-                    // You are going to check if this button exist first, so you know if there really is a next page.
+                    // When all data on current page is scraped check if next button exists and scrape next page
                     let nextButtonExist = false;
                     try {
                         await page.waitForSelector('.sc-digi-button-h .digi-button--icon-secondary.sc-digi-button');
 
+                        // $eval throws error if selector is not found
+                        // This selector only exists on last page
                         const nextButton = await page.$eval('digi-button.digi-navigation-pagination__button.digi-navigation-pagination__button--next.digi-navigation-pagination__button--hidden.sc-digi-navigation-pagination.sc-digi-button-h.sc-digi-button-s.hydrated span.sc-digi-navigation-pagination', text => text.textContent);
 
                         nextButtonExist = false;
@@ -134,9 +146,11 @@ router.get('/updateData', function(req, res, next) {
                         await page.waitForSelector('.sc-digi-button-h .digi-button--icon-secondary.sc-digi-button');
                         await page.waitForSelector('.result-container');
 
-                        return scrapeCurrentPage(); // Call this function recursively
+                        // Call this function recursively
+                        return scrapeCurrentPage();
                     }
                     await page.close();
+
                     // console.log(scrapedData);
                     return scrapedData;
                 }
