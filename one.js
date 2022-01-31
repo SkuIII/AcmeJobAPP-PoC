@@ -1,6 +1,7 @@
 'use strict';
 
 const puppeteer = require('puppeteer');
+const fs = require('fs');
 
 async function startBrowser() {
     let browser;
@@ -63,29 +64,29 @@ const scraperObject = {
                 await newPage.goto(link);
                 await newPage.waitForSelector('.jobb-container');
 
-                // dataObj['jobTitle'] = await newPage.$eval('h1.spacing.break-title', text => text.textContent);
-                // dataObj['companyName'] = await newPage.$eval('#pb-company-name', text => text.textContent);
-                // dataObj['companyLocation'] = await newPage.$eval('#pb-job-location', text => text.textContent);
-                // dataObj['jobDescription'] = await newPage.$eval('.job-description', text => text.textContent);
-                // dataObj['jobTerms'] = await newPage.$eval('[translate="section-jobb-main-content.extent"]', text => text.nextElementSibling.textContent);
-                // dataObj['jobPublished'] = await newPage.$eval('[translate="section-jobb-about.published"]', text => text.textContent);
+                dataObj['jobTitle'] = await newPage.$eval('h1.spacing.break-title', text => text.textContent);
+                dataObj['companyName'] = await newPage.$eval('#pb-company-name', text => text.textContent);
+                dataObj['companyLocation'] = await newPage.$eval('#pb-job-location', text => text.textContent);
+                dataObj['jobDescription'] = await newPage.$eval('.job-description', text => text.textContent);
+                dataObj['jobTerms'] = await newPage.$eval('[translate="section-jobb-main-content.extent"]', text => text.nextElementSibling.textContent);
+                dataObj['jobPublished'] = await newPage.$eval('[translate="section-jobb-about.published"]', text => text.textContent);
 
-                // const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-                // const monthsSwedish = ['januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december'];
+                const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                const monthsSwedish = ['januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december'];
 
-                // const publishedDateSplit = dataObj['jobPublished'].split(' ');
-                // const publishedYearSplit = publishedDateSplit[3].split(',');
-                // const publishedTimeSplit = publishedDateSplit[5].split('.');
+                const publishedDateSplit = dataObj['jobPublished'].split(' ');
+                const publishedYearSplit = publishedDateSplit[3].split(',');
+                const publishedTimeSplit = publishedDateSplit[5].split('.');
 
-                // monthsSwedish.forEach((element, counter) => {
-                //     if (publishedDateSplit[2] == element) {
-                //         publishedDateSplit[2] = months[counter];
-                //     }
-                // });
+                monthsSwedish.forEach((element, counter) => {
+                    if (publishedDateSplit[2] == element) {
+                        publishedDateSplit[2] = months[counter];
+                    }
+                });
 
-                // const publishedDate = `${publishedDateSplit[1]} ${publishedDateSplit[2]} ${publishedYearSplit[0]} ${publishedTimeSplit[0]}:${publishedTimeSplit[1]}`;
+                const publishedDate = `${publishedDateSplit[1]} ${publishedDateSplit[2]} ${publishedYearSplit[0]} ${publishedTimeSplit[0]}:${publishedTimeSplit[1]}`;
 
-                // dataObj['jobPublishedDate'] = Date.parse(publishedDate);
+                dataObj['jobPublishedDate'] = Date.parse(publishedDate);
 
                 dataObj['jobLink'] = link;
 
@@ -93,27 +94,20 @@ const scraperObject = {
                 await newPage.close();
             });
 
-            // for (let link = 0; link < urls.length; link++) {
-            //     let currentPageData = await pagePromise(urls[link]);
-            //     scrapedData.push(currentPageData);
-            //     console.log(currentPageData);
-            // }
-
-            // scrapedData.sort((element1, element2) => element2.jobPublishedDate - element1.jobPublishedDate)
-
-            // fs.writeFile("data.json", JSON.stringify(scrapedData), (err) => {
-            //     if (err)
-            //         console.log(err);
-            //     else {
-            //         console.log("File written successfully\n");
-            //     }
-            // });
+            for (let link = 0; link < urls.length; link++) {
+                let currentPageData = await pagePromise(urls[link]);
+                scrapedData.push(currentPageData);
+                console.log(currentPageData);
+            }
 
             // When all the data on this page is done, click the next button and start the scraping of the next page
             // You are going to check if this button exist first, so you know if there really is a next page.
-            let nextButtonExist = true;
+            let nextButtonExist = false;
             try {
-                const nextButtonExist = await page.$eval('digi-button.digi-navigation-pagination__button.digi-navigation-pagination__button--next.digi-navigation-pagination__button--hidden.sc-digi-navigation-pagination.sc-digi-button-h.sc-digi-button-s.hydrated');
+                await page.waitForSelector('.sc-digi-button-h .digi-button--icon-secondary.sc-digi-button');
+
+                const nextButton = await page.$eval('digi-button.digi-navigation-pagination__button.digi-navigation-pagination__button--next.digi-navigation-pagination__button--hidden.sc-digi-navigation-pagination.sc-digi-button-h.sc-digi-button-s.hydrated span.sc-digi-navigation-pagination', text => text.textContent);
+
                 nextButtonExist = false;
 
             } catch (err) {
@@ -129,21 +123,31 @@ const scraperObject = {
                 await page.waitForSelector('.sc-digi-button-h .digi-button--icon-secondary.sc-digi-button');
                 await page.waitForSelector('.result-container');
 
-
                 return scrapeCurrentPage(); // Call this function recursively
             }
             await page.close();
-            console.log('scrapedData');
+            console.log(scrapedData);
+            console.log('scrapedDatascrapedData');
             return scrapedData;
         }
         let data = await scrapeCurrentPage();
-        console.log('data');
+
+        console.log('DATADATADATA');
+
+        data.sort((element1, element2) => element2.jobPublishedDate - element1.jobPublishedDate);
+
+        fs.writeFile("data.json", JSON.stringify(data), (err) => {
+            if (err)
+                console.log(err);
+            else {
+                console.log("File written successfully\n");
+            }
+        });
+
+        console.log(data);
+        res.send(data);
         return data;
     }
 }
 
 startBrowser();
-
-// .digi-navigation-pagination__button--hidden.sc-digi-navigation-pagination
-// .digi-navigation-pagination__button.digi-navigation-pagination__button--previous.digi-navigation-pagination__button--hidden.sc-digi-navigation-pagination.sc-digi-button-h.sc-digi-button-s hydrated
-// .digi-navigation-pagination__button.digi-navigation-pagination__button--next.digi-navigation-pagination__button--hidden.sc-digi-navigation-pagination.sc-digi-button-h.sc-digi-button-s.hydrated
