@@ -50,6 +50,8 @@ const load = (res) => {
         divCollapse.id = 'divCollapse' + counter;
 
         const descriptionShort = document.createElement('h6');
+        descriptionShort.id = 'descShort ' + counter;
+        descriptionShort.style.display = 'block';
 
         let descriptionSplit = element.jobDescription.split(' ');
 
@@ -62,14 +64,16 @@ const load = (res) => {
             }
         });
 
-        const btnDropDown = document.createElement('button');
-        btnDropDown.textContent = 'Läs mer';
-        btnDropDown.className = 'btn btn-primary my-3';
-        btnDropDown.type = 'button';
-        btnDropDown.setAttribute('data-bs-toggle', 'collapse');
-        btnDropDown.setAttribute('data-bs-target', '#divCollapse' + counter);
-        btnDropDown.setAttribute('aria-expanded', 'false');
-        btnDropDown.setAttribute('aria-controls', 'divCollapse' + counter);
+        const btnCollapse = document.createElement('button');
+        btnCollapse.textContent = 'Läs mer';
+        btnCollapse.className = 'btn btn-primary my-3';
+        btnCollapse.type = 'button';
+        btnCollapse.id = 'btnCollapse ' + counter;
+        btnCollapse.setAttribute('data-bs-toggle', 'collapse');
+        btnCollapse.setAttribute('data-bs-target', '#divCollapse' + counter);
+        btnCollapse.setAttribute('aria-expanded', 'false');
+        btnCollapse.setAttribute('aria-controls', 'divCollapse' + counter);
+        btnCollapse.addEventListener('click', hideShortDesc)
 
         const descriptionLong = document.createElement('p');
         descriptionLong.textContent = element.jobDescription;
@@ -83,7 +87,7 @@ const load = (res) => {
         cardBody.appendChild(location);
         cardBody.appendChild(published);
         cardBody.appendChild(descriptionShort);
-        cardBody.appendChild(btnDropDown);
+        cardBody.appendChild(btnCollapse);
         cardBody.appendChild(link);
         cardBody.appendChild(divCollapse);
         divCollapse.appendChild(descriptionLong);
@@ -137,6 +141,7 @@ const clickStar = (event) => {
     divCollapse.id = 'divCollapseStar' + index;
 
     const descriptionShort = document.createElement('h6');
+    descriptionShort.id = 'descShortStar ' + index;
 
     let descriptionSplit = data[index].jobDescription.split(' ');
 
@@ -149,14 +154,16 @@ const clickStar = (event) => {
         }
     });
 
-    const btnDropDown = document.createElement('button');
-    btnDropDown.textContent = 'Läs mer';
-    btnDropDown.className = 'btn btn-primary my-3';
-    btnDropDown.type = 'button';
-    btnDropDown.setAttribute('data-bs-toggle', 'collapse');
-    btnDropDown.setAttribute('data-bs-target', '#divCollapseStar' + index);
-    btnDropDown.setAttribute('aria-expanded', 'false');
-    btnDropDown.setAttribute('aria-controls', 'divCollapseStar' + index);
+    const btnCollapse = document.createElement('button');
+    btnCollapse.textContent = 'Läs mer';
+    btnCollapse.className = 'btn btn-primary my-3';
+    btnCollapse.type = 'button';
+    btnCollapse.id = 'btnCollapseStar ' + index;
+    btnCollapse.setAttribute('data-bs-toggle', 'collapse');
+    btnCollapse.setAttribute('data-bs-target', '#divCollapseStar' + index);
+    btnCollapse.setAttribute('aria-expanded', 'false');
+    btnCollapse.setAttribute('aria-controls', 'divCollapseStar' + index);
+    btnCollapse.addEventListener('click', hideShortDescStar)
 
     const descriptionLong = document.createElement('p');
     descriptionLong.textContent = data[index].jobDescription;
@@ -170,7 +177,7 @@ const clickStar = (event) => {
     cardBody.appendChild(location);
     cardBody.appendChild(published);
     cardBody.appendChild(descriptionShort);
-    cardBody.appendChild(btnDropDown);
+    cardBody.appendChild(btnCollapse);
     cardBody.appendChild(link);
     cardBody.appendChild(divCollapse);
     divCollapse.appendChild(descriptionLong);
@@ -187,3 +194,24 @@ const unClickStar = (event) => {
         document.getElementById('colAds').className = 'col-12';
     }
 }
+
+const hideShortDesc = (event) => {
+  const descShortHide = document.getElementById('descShort ' + event.target.id.split(' ')[1])
+
+  if (descShortHide.style.display !== 'none') {
+    descShortHide.style.display = 'none';
+  } else {
+    descShortHide.style.display = 'block';
+  }
+};
+
+const hideShortDescStar = (event) => {
+    const descShortHide = document.getElementById('descShortStar ' + event.target.id.split(' ')[1])
+  
+    if (descShortHide.style.display !== 'none') {
+      descShortHide.style.display = 'none';
+    } else {
+      descShortHide.style.display = 'block';
+    }
+  };
+
