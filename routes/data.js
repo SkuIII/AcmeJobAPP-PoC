@@ -51,7 +51,7 @@ router.get('/updateData', function(req, res, next) {
         }
 
         const scraperObject = {
-            url: 'https://arbetsformedlingen.se/platsbanken/annonser?ot=6YE1_gAC_R2G&q=devops&l=2:CifL_Rzy_Mku',
+            url: 'https://www.figma.com/',
             async scraper(browser) {
                 let page = await browser.newPage();
 
@@ -60,115 +60,124 @@ router.get('/updateData', function(req, res, next) {
                 // Navigate to the selected page
                 await page.goto(this.url);
 
-                let scrapedData = [];
+                await page.waitForSelector('.figma-11ymfoj');
 
                 async function scrapeCurrentPage() {
 
                     // Wait for the required DOM to be rendered
-                    await page.waitForSelector('.result-container');
+                    await page.waitForSelector('.figma-11ymfoj');
 
-                    // Get the link to all the required ads
-                    let urls = await page.$$eval('.header-container > h3 > a', links => {
-                        return links.map(link => link.href);
+                    await page.click('.figma-11ymfoj');
+                    await page.click('.figma-b17hd3');
+
+                    let email = 'kasiemsaeed@gmail.com';
+                    email = email.split('');
+
+                    email.forEach(element => {
+                        page.keyboard.type(element);
                     });
 
-                    console.log(urls);
+                    await page.keyboard.press('Tab');
 
-                    // Loop through each of those links, open a new page instance and get the relevant data from them
-                    let pagePromise = (link) => new Promise(async(resolve, reject) => {
-                        let dataObj = {};
+                    let password = 'FigmaKasiem024'
+                    password = password.split('');
 
-                        let newPage = await browser.newPage();
-                        await newPage.goto(link);
-                        await newPage.waitForSelector('.jobb-container');
+                    password.forEach(element => {
+                        page.keyboard.type(element);
+                    });
+                    await page.keyboard.press('Enter');
 
-                        dataObj['jobTitle'] = await newPage.$eval('h1.spacing.break-title', text => text.textContent);
-                        dataObj['companyName'] = await newPage.$eval('#pb-company-name', text => text.textContent);
-                        dataObj['companyLocation'] = await newPage.$eval('#pb-job-location', text => text.textContent);
-                        dataObj['jobDescription'] = await newPage.$eval('.job-description', text => text.innerHTML);
-                        dataObj['jobTerms'] = await newPage.$eval('[translate="section-jobb-main-content.extent"]', text => text.nextElementSibling.textContent);
+                    await page.waitForSelector('#react-page > div > div > div:nth-child(1) > div.file_browser_view--fileBrowserPageViewContainer--1olui > div:nth-child(5) > div.new_file_creation_topbar--newFileTilesContainer--1fSKp.tiles_view--tilesGrid--3hCfa.tiles_view--tiles--3YdT5 > a:nth-child(1)')
 
-                        dataObj['jobPublished'] = await newPage.$eval('[translate="section-jobb-about.published"]', text => text.textContent);
+                    await page.click('#react-page > div > div > div:nth-child(1) > div.file_browser_view--fileBrowserPageViewContainer--1olui > div:nth-child(5) > div.new_file_creation_topbar--newFileTilesContainer--1fSKp.tiles_view--tilesGrid--3hCfa.tiles_view--tiles--3YdT5 > a:nth-child(1)')
 
-                        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-                        const monthsSwedish = ['januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december'];
+                    function waitFor(delay) {
+                        return new Promise(resolve => setTimeout(resolve, delay));
+                    }
 
-                        // Getting relevant paramaters to sort ads by date
-                        const publishedDateSplit = dataObj['jobPublished'].split(' ');
-                        const publishedYearSplit = publishedDateSplit[3].split(',');
-                        const publishedTimeSplit = publishedDateSplit[5].split('.');
+                    await waitFor(5000)
 
-                        // Converting from months in swedish to english
-                        monthsSwedish.forEach((element, counter) => {
-                            if (publishedDateSplit[2] == element) {
-                                publishedDateSplit[2] = months[counter];
-                            }
-                        });
+                    await page.waitForSelector('#react-page > div > div > div.fullscreen_view--flexContainer--3cbGo > div > div:nth-child(2) > div > div.action--enabled--16Cku.action--root--1ClVW.toolbar_styles--enabledButton--2cWGq.toolbar_view--menuButton--1U17F')
+                    await page.click('#react-page > div > div > div.fullscreen_view--flexContainer--3cbGo > div > div:nth-child(2) > div > div.action--enabled--16Cku.action--root--1ClVW.toolbar_styles--enabledButton--2cWGq.toolbar_view--menuButton--1U17F')
 
-                        const publishedDate = `${publishedDateSplit[1]} ${publishedDateSplit[2]} ${publishedYearSplit[0]} ${publishedTimeSplit[0]}:${publishedTimeSplit[1]}`;
 
-                        dataObj['jobPublishedDate'] = Date.parse(publishedDate);
+                    // for (let downArrow = 9; downArrow <= downArrow; downArrow++) {
+                    //     page.keyboard.press('ArrowDown');
 
-                        dataObj['jobLink'] = link;
+                    // }
 
-                        resolve(dataObj);
-                        await newPage.close();
+                    await page.keyboard.press('ArrowDown');
+                    await page.keyboard.press('ArrowDown');
+                    await page.keyboard.press('ArrowDown');
+                    await page.keyboard.press('ArrowDown');
+                    await page.keyboard.press('ArrowDown');
+                    await page.keyboard.press('ArrowDown');
+                    await page.keyboard.press('ArrowDown');
+                    await page.keyboard.press('ArrowDown');
+                    await page.keyboard.press('ArrowDown');
+                    await waitFor(4000)
+
+                    await page.keyboard.press('ArrowRight');
+                    await waitFor(4000)
+
+                    await page.keyboard.press('ArrowDown');
+                    await waitFor(4000)
+
+                    await page.keyboard.press('Enter');
+                    await waitFor(10000)
+
+                    await page.waitForSelector('#react-page > div > div:nth-child(1) > div:nth-child(1)');
+                    // await page.click('#react-page > div > div:nth-child(2) > div:nth-child(2) > form > div:nth-child(1)');
+                    await page.click('#react-page > div > div:nth-child(1) > div:nth-child(1)');
+                    await waitFor(4000)
+
+                    await page.keyboard.down('Control');
+                    await page.keyboard.press('KeyA');
+                    await page.keyboard.up('Control');
+                    await page.keyboard.press('Backspace');
+
+                    let url = 'waywarder.com'
+                    url = url.split('');
+
+                    url.forEach(element => {
+                        page.keyboard.type(element);
                     });
 
-                    // Not using foreach because of await
-                    for (let link = 0; link < urls.length; link++) {
-                        let currentPageData = await pagePromise(urls[link]);
-                        scrapedData.push(currentPageData);
-                        // console.log(currentPageData);
-                    }
+                    await page.keyboard.press('Tab');
 
-                    // When all data on current page is scraped check if next button exists and scrape next page
-                    let nextButtonExist = false;
-                    try {
-                        await page.waitForSelector('.sc-digi-button-h .digi-button--icon-secondary.sc-digi-button');
+                    await page.keyboard.press('Tab');
 
-                        // $eval throws error if selector is not found
-                        // This selector only exists on last page
-                        const nextButton = await page.$eval('digi-button.digi-navigation-pagination__button.digi-navigation-pagination__button--next.digi-navigation-pagination__button--hidden.sc-digi-navigation-pagination.sc-digi-button-h.sc-digi-button-s.hydrated span.sc-digi-navigation-pagination', text => text.textContent);
+                    await page.keyboard.press('Tab');
 
-                        nextButtonExist = false;
+                    await page.keyboard.press('Tab');
 
-                    } catch (err) {
-                        // console.log(err);
-                        nextButtonExist = true;
-                    }
-                    if (nextButtonExist) {
+                    await page.keyboard.press('Tab');
 
-                        await page.waitForSelector('.sc-digi-button-h .digi-button--icon-secondary.sc-digi-button');
+                    await page.keyboard.press('Enter');
+                    await waitFor(20000)
 
-                        await page.click('.sc-digi-button-h .digi-button--icon-secondary.sc-digi-button');
+                    await page.click('#react-page > div > div > div.fullscreen_view--flexContainer--3cbGo > div > div:nth-child(2) > div > div.toolbar_view--buttonGroup--2wM3n.toolbar_view--rightButtonGroup--1BuhO > div.multiplayer_view--multiplayerView--19Y20 > div > div')
+                    await waitFor(4000)
 
-                        await page.waitForSelector('.sc-digi-button-h .digi-button--icon-secondary.sc-digi-button');
-                        await page.waitForSelector('.result-container');
+                    // await page.keyboard.type('vigor@waywarder.com')
 
-                        // Call this function recursively
-                        return scrapeCurrentPage();
-                    }
-                    await page.close();
+                    let shareEmail = 'vigor@waywarder.com'
+                    shareEmail = shareEmail.split('');
 
-                    // console.log(scrapedData);
-                    return scrapedData;
+                    shareEmail.forEach(element => {
+                        page.keyboard.type(element);
+                    });
+
+                    await page.keyboard.press('Enter')
+                    await page.keyboard.press('Enter')
+                    await page.keyboard.press('Enter')
                 }
-                let data = await scrapeCurrentPage();
 
-                data.sort((element1, element2) => element2.jobPublishedDate - element1.jobPublishedDate);
+                // await page.close();
 
-                fs.writeFile("data.json", JSON.stringify(data), (err) => {
-                    if (err)
-                        console.log(err);
-                    else {
-                        console.log("File written successfully\n");
-                    }
-                });
-
-                console.log(data);
-                res.send(data);
-                return data;
+                await scrapeCurrentPage();
+                res.send('hej')
+                return 'hej';
             }
         }
 
